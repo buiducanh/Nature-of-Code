@@ -1,4 +1,23 @@
-class WalkerWeightedBottomRight {
+class Vector {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  length() {
+    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+  }
+
+  unit() {
+    return new Vector(this.x / this.length(), this.y / this.length());
+  }
+
+  minus(otherVector) {
+    return new Vector(this.x - otherVector.x, this.y - otherVector.y);
+  }
+}
+
+class WalkerChaseMouse {
   constructor() {
     this.x = width / 2;
     this.y = height / 2;
@@ -13,8 +32,10 @@ class WalkerWeightedBottomRight {
     const randomQuadrant = int(random(100));
     const isChasingMouse = randomQuadrant < 30;
     if (isChasingMouse) {
-      this.x += random(0, 1);
-      this.y -= random(-1, 0);
+      let mouseVec = new Vector(mouseX, mouseY);
+      let walkToMouseVec = mouseVec.minus(new Vector(this.x, this.y)).unit();
+      this.x += walkToMouseVec.x;
+      this.y += walkToMouseVec.y;
     } else {
       const chosenQuadrant = int(random(1, 4));
       this.x += random(0, 1) * quadrantTransform[chosenQuadrant]['x'];
@@ -32,11 +53,12 @@ let walker;
 function setup() {
   createCanvas(400, 400);
   background(220);
-  walker = new WalkerWeightedBottomRight();
+  walker = new WalkerChaseMouse();
 }
 
 function draw() {
   walker.step();
   walker.display();
 }
+
 
